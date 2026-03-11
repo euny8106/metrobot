@@ -211,6 +211,9 @@ class MetronomeCog(commands.Cog):
                             break
                         await asyncio.sleep(min(remaining, 0.05))
 
+                    if not vc.is_connected():
+                        return
+
                     audio_path = await generate_number_audio(num)
                     source = discord.FFmpegPCMAudio(str(audio_path))
 
