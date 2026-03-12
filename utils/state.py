@@ -1,12 +1,23 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
+MAX_CLERICS = 25
+OFFICER_ROLE_ID = 1006278543778517082
+
+
+def is_officer(interaction) -> bool:
+    """Returns True if the interacting member has the Officer role."""
+    if not interaction.guild:
+        return False
+    return any(r.id == OFFICER_ROLE_ID for r in interaction.user.roles)
+
 @dataclass
 class MetronomeState:
     interval: float          # 초 단위 간격
-    max_num: int             # 최대 번호
+    max_num: int = MAX_CLERICS  # 최대 번호
     excluded: set = field(default_factory=set)   # 제외된 번호들
     is_running: bool = False
+    is_paused: bool = False
     current_num: int = 1     # 현재 읽고 있는 번호 추적용
 
     def get_active_numbers(self) -> list[int]:
