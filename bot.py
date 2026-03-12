@@ -1,11 +1,33 @@
 import discord
 from discord.ext import commands
 import os
+import glob
 from dotenv import load_dotenv
 from utils.audio import pregenerate_audio
 from utils.state import MAX_CLERICS
 
 load_dotenv()
+
+# Load libopus — try standard names first, then search the nix store (Railway)
+if not discord.opus.is_loaded():
+    for _name in ['libopus.so.0', 'libopus.so', 'opus']:
+        try:
+            discord.opus.load_opus(_name)
+            break
+        except Exception:
+            pass
+
+if not discord.opus.is_loaded():
+    for _path in sorted(glob.glob('/nix/store/*/lib/libopus.so*')):
+        try:
+            discord.opus.load_opus(_path)
+            print(f"✅ Loaded libopus from {_path}")
+            break
+        except Exception:
+            pass
+
+if not discord.opus.is_loaded():
+    raise RuntimeError("❌ libopus not found — voice audio will not work. Install libopus on the server.")
 
 intents = discord.Intents.default()
 intents.voice_states = True
