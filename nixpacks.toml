@@ -2,10 +2,7 @@
 nixPkgs = ["ffmpeg", "python311", "libopus", "libsodium"]
 
 [phases.install]
-cmds = [
-  "python3 -m venv /opt/venv",
-  "/opt/venv/bin/pip install -r requirements.txt"
-]
+cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "/opt/venv/bin/python bot.py"
+cmd = "python bot.py"

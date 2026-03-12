@@ -8,11 +8,13 @@ from utils.state import MAX_CLERICS
 
 load_dotenv()
 
-# Load libopus — try standard names first, then search the nix store (Railway)
+# Load libopus — Debian path (Dockerfile), then fallbacks for other environments
 if not discord.opus.is_loaded():
-    for _name in ['libopus.so.0', 'libopus.so', 'opus']:
+    for _name in ['libopus.so.0', '/usr/lib/x86_64-linux-gnu/libopus.so.0',
+                   '/usr/lib/aarch64-linux-gnu/libopus.so.0', 'libopus.so', 'opus']:
         try:
             discord.opus.load_opus(_name)
+            print(f"✅ Loaded libopus: {_name}")
             break
         except Exception:
             pass
@@ -21,7 +23,7 @@ if not discord.opus.is_loaded():
     for _path in sorted(glob.glob('/nix/store/*/lib/libopus.so*')):
         try:
             discord.opus.load_opus(_path)
-            print(f"✅ Loaded libopus from {_path}")
+            print(f"✅ Loaded libopus from nix: {_path}")
             break
         except Exception:
             pass

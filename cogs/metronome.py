@@ -206,7 +206,9 @@ class MetronomeCog(commands.Cog):
 
         # single continuous source — stays speaking the whole session
         audio_source = MetronomeAudioSource()
+        print(f"DEBUG: connecting vc={vc}, is_connected={vc.is_connected()}, is_playing={vc.is_playing()}")
         vc.play(audio_source)
+        print(f"DEBUG: vc.play called, is_playing={vc.is_playing()}")
         task = asyncio.create_task(self._metronome_loop(guild_id, vc, state, audio_source))
         guild_tasks[guild_id] = task
 
@@ -246,6 +248,7 @@ class MetronomeCog(commands.Cog):
     async def _metronome_loop(self, guild_id: int, vc: discord.VoiceClient, state: MetronomeState, source: MetronomeAudioSource):
         """Core loop: play active numbers at the set interval"""
         import time
+        print(f"DEBUG: metronome loop started for guild {guild_id}")
         try:
             t_origin = time.monotonic()
             slot = 0
@@ -295,6 +298,7 @@ class MetronomeCog(commands.Cog):
                     if not state.is_running:
                         return
 
+                    print(f"DEBUG: arming num {num}")
                     source.arm(_pcm_cache[num])
 
         except asyncio.CancelledError:
