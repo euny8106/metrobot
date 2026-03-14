@@ -11,7 +11,7 @@ class StatusView(discord.ui.View):
     """
 
     def __init__(self, state: MetronomeState, apply_callback):
-        super().__init__(timeout=120)
+        super().__init__(timeout=None)
         self.state = state
         self.preview_excluded = set(state.excluded)
         self.preview_max = state.max_num
